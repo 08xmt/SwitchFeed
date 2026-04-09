@@ -25,7 +25,7 @@ contract SwitchFeed is IChainlinkFeed{
     address public operator;
     address public pendingOperator;
     uint8 public immutable decimals;
-    int32 public immutable MAX_PRICE_DIVERGENCE_BPS;
+    int32 public constant MAX_PRICE_DIVERGENCE_BPS = 1000;
 
     IChainlinkFeed public feed;
 
@@ -33,14 +33,12 @@ contract SwitchFeed is IChainlinkFeed{
     event NewOperator(address newOperator);
     event NewPendingOperator(address newPendingOperator);
     
-    constructor(address _feed, address _operator, int32 _maxPriceDivergenceBps) {
-        require(_maxPriceDivergenceBps >= 0, "Cannot be negative");
+    constructor(address _feed, address _operator) {
         require(_feed != address(0));
         require(_operator != address(0));
         operator = _operator;
         feed = IChainlinkFeed(_feed);
         decimals = feed.decimals();
-        MAX_PRICE_DIVERGENCE_BPS = _maxPriceDivergenceBps;
     }
 
     function latestRoundData() external view returns(uint80, int256, uint256, uint256, uint80) {
